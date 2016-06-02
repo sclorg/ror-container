@@ -3,7 +3,7 @@
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 . ${THISDIR}/utils.sh
 
-IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-42-rhel7}"
+IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-41-rhel7}"
 
 function create_container() {
     local name=$1 ; shift
@@ -53,11 +53,11 @@ docker inspect "$IMAGE_NAME" &>/dev/null || run "docker pull $IMAGE_NAME"
 
 # Ruby, Rails and Node.js have to be present and directly available:
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'ruby -v' > output"
-run "fgrep 'ruby 2.3' output"
+run "fgrep 'ruby 2.2' output"
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'rails -v' > output"
-run "fgrep 'Rails 4.2' output"
+run "fgrep 'Rails 4.1' output"
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'node -v' > output"
-run "fgrep 'v4.' output"
+run "fgrep 'v0.10.' output"
 
 # Check Rails welcome page
 CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rails s -b 0.0.0.0 -p 8080'"
