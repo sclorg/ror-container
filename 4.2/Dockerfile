@@ -59,6 +59,7 @@ ENV RAILS_VERSION 4.2
 
 RUN yum install -y yum-utils gettext hostname && \
     yum install -y centos-release-scl-rh && \
+    yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-ruby23 rh-ruby23-ruby-devel rh-ruby23-rubygem-rake v8314 rh-ruby23-rubygem-bundler rh-ror42 rh-nodejs4" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
