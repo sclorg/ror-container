@@ -59,7 +59,9 @@ ENV RAILS_VERSION 4.1
 
 RUN yum install -y yum-utils && \
     yum install -y centos-release-scl-rh && \
-    yum install -y --setopt=tsflags=nodocs rh-ruby22 rh-ruby22-ruby-devel rh-ruby22-rubygem-rake v8314 rh-ruby22-rubygem-bundler rh-ror41 nodejs010 && \
+    INSTALL_PKGS="rh-ruby22 rh-ruby22-ruby-devel rh-ruby22-rubygem-rake v8314 rh-ruby22-rubygem-bundler rh-ror41 nodejs010" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
     yum clean all -y
 
 # Add .gemrc
