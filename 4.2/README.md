@@ -1,7 +1,7 @@
 Ruby on Rails 4.2 platform image
 ================================
 
-The rhscl/ror-42-rhel7 container image provides a Ruby on Rails 4.2 platform for building and running applications. It contains Ruby 2.3, Ruby on Rails 4.2, and Node.js 0.10 preinstalled.
+The rhscl/ror-42-rhel7 container image provides a Ruby on Rails 4.2 platform for building and running applications. It contains Ruby 2.3, Ruby on Rails 4.2, and Node.js 4 preinstalled.
 
 
 Usgae

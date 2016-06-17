@@ -9,7 +9,7 @@ LABEL io.k8s.description="Platform for building and running Ruby on Rails 4.1 ap
 ENV HOME=/opt/app-root/src \
     PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-ADD contrib/etc/scl_enable /opt/app-root/etc/scl_enable
+COPY contrib/etc/scl_enable /opt/app-root/etc/scl_enable
 ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
@@ -65,7 +65,7 @@ RUN yum install -y yum-utils && \
     yum clean all -y
 
 # Add .gemrc
-ADD contrib/.gemrc /opt/app-root/.gemrc
+COPY contrib/.gemrc /opt/app-root/.gemrc
 
 RUN chown -R 1001:1001 /opt/app-root
 
@@ -74,11 +74,11 @@ USER 1001
 WORKDIR ${HOME}
 
 # Install the usage script with base image usage informations
-ADD contrib/bin/usage /usr/local/bin/usage
+COPY contrib/bin/usage /usr/local/bin/usage
 
 # Use entrypoint so path is correctly adjusted already at the time the command
 # is searching, so something like docker run IMG python runs binary from SCL
-ADD contrib/bin/container-entrypoint /usr/bin/container-entrypoint
+COPY contrib/bin/container-entrypoint /usr/bin/container-entrypoint
 
 # Set the default CMD to print the usage of the language image
 ENTRYPOINT ["container-entrypoint"]
