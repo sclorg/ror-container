@@ -9,7 +9,7 @@ LABEL io.k8s.description="Platform for building and running Ruby on Rails 4.2 ap
 ENV HOME=/opt/app-root/src \
     PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-ADD contrib/etc/scl_enable /opt/app-root/etc/scl_enable
+COPY contrib/etc/scl_enable /opt/app-root/etc/scl_enable
 ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
@@ -57,16 +57,16 @@ EXPOSE 8080
 
 ENV RAILS_VERSION 4.2
 
-RUN yum install -y yum-utils gettext hostname && \
+RUN yum install -y yum-utils && \
     yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
-    INSTALL_PKGS="rh-ruby23 rh-ruby23-ruby-devel rh-ruby23-rubygem-rake v8314 rh-ruby23-rubygem-bundler rh-ror42 rh-nodejs4" && \
+    INSTALL_PKGS="rh-ror42 rh-ruby23-ruby-devel rh-nodejs4" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y
 
 # Add .gemrc
-ADD contrib/.gemrc /opt/app-root/.gemrc
+COPY contrib/.gemrc /opt/app-root/.gemrc
 
 RUN chown -R 1001:1001 /opt/app-root
 
@@ -75,11 +75,11 @@ USER 1001
 WORKDIR ${HOME}
 
 # Install the usage script with base image usage informations
-ADD contrib/bin/usage /usr/local/bin/usage
+COPY contrib/bin/usage /usr/local/bin/usage
 
 # Use entrypoint so path is correctly adjusted already at the time the command
 # is searching, so something like docker run IMG python runs binary from SCL
-ADD contrib/bin/container-entrypoint /usr/bin/container-entrypoint
+COPY contrib/bin/container-entrypoint /usr/bin/container-entrypoint
 
 # Set the default CMD to print the usage of the language image
 ENTRYPOINT ["container-entrypoint"]

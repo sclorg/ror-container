@@ -3,7 +3,7 @@
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 . ${THISDIR}/utils.sh
 
-IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-42-rhel7}"
+IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-42-rhel7-candidate}"
 
 function create_container() {
     local name=$1 ; shift
