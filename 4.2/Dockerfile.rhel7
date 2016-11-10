@@ -1,4 +1,4 @@
-FROM rhel7:7.2
+FROM rhel7
 
 LABEL io.k8s.description="Platform for building and running Ruby on Rails 4.2 applications" \
       io.k8s.display-name="Ruby on Rails 4.2"
@@ -22,6 +22,8 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Let's install the same as STI images
+# To use subscription inside container yum command has to be run first (before yum-config-manager)
+# https://access.redhat.com/solutions/1443553
 RUN yum install -y --setopt=tsflags=nodocs \
   autoconf \
   automake \
@@ -64,7 +66,10 @@ EXPOSE 8080
 
 ENV RAILS_VERSION 4.2
 
-RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
+# To use subscription inside container yum command has to be run first (before yum-config-manager)
+# https://access.redhat.com/solutions/1443553
+RUN yum repolist > /dev/null && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     INSTALL_PKGS="rh-ror42 rh-ruby23-ruby-devel rh-nodejs4" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
