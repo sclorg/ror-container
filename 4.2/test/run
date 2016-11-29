@@ -25,6 +25,11 @@ function get_cid() {
   echo $(cat "$CIDFILE_DIR/$id")
 }
 
+function get_container_ip() {
+    local id="$1" ; shift
+    docker inspect --format='{{.NetworkSettings.IPAddress}}' $(get_cid "$id")
+}
+
 function rm_container {
     local name="$1"
     local cid="`get_cid $name`"
@@ -61,13 +66,11 @@ run "fgrep 'v4.' output"
 
 # Check Rails welcome page
 CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rails s -b 0.0.0.0 -p 8080'"
-DOCKER_ARGS='-p 8080:8080'
 run "create_container test_welcome_page"
 CONTAINER_ARGS=
-DOCKER_ARGS=
 for i in `seq 10`; do
     sleep 5
-    run 'curl localhost:8080 > output'
+    run "curl $(get_container_ip 'test_welcome_page'):8080 > output"
     res=$?
     run "fgrep 'Ruby on Rails: Welcome aboard' output"
     test $res = 0 && break
