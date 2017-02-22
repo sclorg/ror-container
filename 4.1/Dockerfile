@@ -64,7 +64,6 @@ RUN yum install -y yum-utils && \
     yum clean all -y
 
 # Install the files that we need in the container
-COPY README.md /help.md
 COPY root /
 
 RUN chown -R 1001:1001 /opt/app-root
