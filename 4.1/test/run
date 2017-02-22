@@ -48,6 +48,31 @@ function run {
     return $res
 }
 
+run_doc_check() {
+  local tmpdir=$(mktemp -d)
+  echo "  Testing documentation in the container image"
+  # Extract the help files from the container
+  for f in help.md help.1 ; do
+    docker run --rm ${IMAGE_NAME} /bin/bash -c "cat /${f}" >${tmpdir}/${f}
+  done
+  # Check whether the files use the correct format
+  if ! file ${tmpdir}/help.1 | grep -q roff ; then
+    echo "ERROR: /help.1 is not in troff or groff format"
+    return 1
+  fi
+  # Check whether the files include some important information
+  for term in nodejs layered ; do
+    for f in help.md help.1 ; do
+      if ! cat ${tmpdir}/${f} | grep -q -e "${term}" ; then
+        echo "ERROR: File /${f} does not include '${term}'."
+        return 1
+      fi
+    done
+  done
+  echo "  Success!"
+  echo
+}
+
 tmpdir="`mktemp -d`"
 pushd $tmpdir > /dev/null || exit 1
 overall=0
@@ -70,6 +95,7 @@ run "create_container test_welcome_page"
 CONTAINER_ARGS=
 for i in `seq 10`; do
     sleep 5
+curl $(get_container_ip 'test_welcome_page'):8080
     run "curl $(get_container_ip 'test_welcome_page'):8080 > output"
     res=$?
     run "fgrep 'Ruby on Rails: Welcome aboard' output"
@@ -80,6 +106,9 @@ rm_container test_welcome_page
 # Check asset precompilation works
 CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rake assets:precompile'"
 run "docker run --rm $IMAGE_NAME $CONTAINER_ARGS"
+
+run_doc_check
+update_overall $?
 
 popd > /dev/null
 rm -Rf "$tmpdir"
