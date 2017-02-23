@@ -1,6 +1,14 @@
 FROM centos:centos7
 
-LABEL io.k8s.description="Platform for building and running Ruby on Rails 4.2 applications" \
+ENV SUMMARY="Platform for building and running Ruby on Rails 4.2 applications" \
+    DESCRIPTION="Ruby on Rails is a full-stack web framework optimized for programmer happiness \
+and sustainable productivity. It encourages beautiful code by favoring convention over configuration. \
+The container image provides a Ruby on Rails 4.2 platform for building and running applications. \
+It contains Ruby 2.3, Ruby on Rails 4.2, and NodeJS 4 preinstalled."
+
+LABEL summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$SUMMARY" \
       io.k8s.display-name="Ruby on Rails 4.2"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
