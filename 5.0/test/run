@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+THISDIR=$(dirname ${BASH_SOURCE[0]})
+. ${THISDIR}/utils.sh
+
+IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-50-rhel7-candidate}"
+
+function create_container() {
+    local name=$1 ; shift
+    cidfile="$CIDFILE_DIR/$name"
+    # create container with a cidfile in a directory for cleanup
+    eval docker run ${DOCKER_ARGS:-} --cidfile $cidfile -d $IMAGE_NAME $CONTAINER_ARGS || return 1
+    echo "Created container $(cat $cidfile)"
+}
+
+function update_overall {
+    res="$1"
+    if [ "$res" != 0 ]; then
+        overall="$res"
+    fi
+}
+
+function get_cid() {
+  local id="$1" ; shift || return 1
+  echo $(cat "$CIDFILE_DIR/$id")
+}
+
+function get_container_ip() {
+    local id="$1" ; shift
+    docker inspect --format='{{.NetworkSettings.IPAddress}}' $(get_cid "$id")
+}
+
+function rm_container {
+    local name="$1"
+    local cid="`get_cid $name`"
+    docker kill "$cid"
+    docker rm "$cid"
+    rm -f "$CIDFILE_DIR/$name"
+}
+
+function run {
+    cmd="$1"
+    expected_res="${2:-0}"
+    msg="${3:-Running command '$cmd'}"
+    run_command "$cmd" "$expected_res" "$msg"
+    res=$?
+    update_overall $res
+    return $res
+}
+
+run_doc_test() {
+  local tmpdir=$(mktemp -d)
+  local f
+  echo "  Testing documentation in the container image"
+  # Extract the help files from the container
+  for f in /usr/share/container-scripts/ror/README.md help.1 ; do
+    docker run --rm ${IMAGE_NAME} /bin/bash -c "cat /${f}" >${tmpdir}/$(basename ${f})
+    # Check whether the files include some important information
+    for term in nodejs layered ; do
+      if ! cat ${tmpdir}/$(basename ${f}) | grep -q -e "${term}" ; then
+        echo "ERROR: File /${f} does not include '${term}'."
+        return 1
+      fi
+    done
+  done
+  # Check whether the files use the correct format
+  if ! file ${tmpdir}/help.1 | grep -q roff ; then
+    echo "ERROR: /help.1 is not in troff or groff format"
+    return 1
+  fi
+  echo "  Success!"
+  echo
+}
+
+tmpdir="`mktemp -d`"
+pushd $tmpdir > /dev/null || exit 1
+overall=0
+CIDFILE_DIR="$tmpdir/cidfiles"
+mkdir $CIDFILE_DIR || exit 1
+
+docker inspect "$IMAGE_NAME" &>/dev/null || run "docker pull $IMAGE_NAME"
+
+# Ruby, Rails and Node.js have to be present and directly available:
+run "docker run --rm $IMAGE_NAME /bin/bash -c 'ruby -v' > output"
+run "fgrep 'ruby 2.4' output"
+run "docker run --rm $IMAGE_NAME /bin/bash -c 'rails -v' > output"
+run "fgrep 'Rails 5.0' output"
+run "docker run --rm $IMAGE_NAME /bin/bash -c 'node -v' > output"
+run "fgrep 'v6.' output"
+
+# Check Rails welcome page
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rails s -b 0.0.0.0 -p 8080'"
+run "create_container test_welcome_page"
+CONTAINER_ARGS=
+is_found_welcome_page=0
+for i in `seq 20`; do
+  sleep 10
+  welcome_url="$(get_container_ip 'test_welcome_page'):8080"
+  echo "Connecting ${welcome_url} [${i}]"
+  curl "${welcome_url}" > output
+  fgrep -q '<h1>Yay! You&rsquo;re on Rails!</h1>' output
+  if [ "$?" = 0 ]; then
+    is_found_welcome_page=1
+    break
+  fi
+done
+run "test ${is_found_welcome_page} = 1"
+rm_container test_welcome_page
+
+# Check asset precompilation works
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rake assets:precompile'"
+run "docker run --rm $IMAGE_NAME $CONTAINER_ARGS"
+
+run_doc_test
+update_overall $?
+
+popd > /dev/null
+rm -Rf "$tmpdir"
+exit $overall
