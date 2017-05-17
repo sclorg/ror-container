@@ -22,8 +22,6 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Let's install the same as STI images
-# To use subscription inside container yum command has to be run first (before yum-config-manager)
-# https://access.redhat.com/solutions/1443553
 RUN yum install -y --setopt=tsflags=nodocs \
   autoconf \
   automake \

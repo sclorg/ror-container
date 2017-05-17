@@ -92,13 +92,19 @@ run "fgrep 'v4.' output"
 CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rails s -b 0.0.0.0 -p 8080'"
 run "create_container test_welcome_page"
 CONTAINER_ARGS=
-for i in `seq 10`; do
-    sleep 5
-    run "curl $(get_container_ip 'test_welcome_page'):8080 > output"
-    res=$?
-    run "fgrep 'Ruby on Rails: Welcome aboard' output"
-    test $res = 0 && break
+is_found_welcome_page=0
+for i in `seq 20`; do
+  sleep 10
+  welcome_url="$(get_container_ip 'test_welcome_page'):8080"
+  echo "Connecting ${welcome_url} [${i}]"
+  curl "${welcome_url}" > output
+  fgrep -q 'Ruby on Rails: Welcome aboard' output
+  if [ "$?" = 0 ]; then
+    is_found_welcome_page=1
+    break
+  fi
 done
+run "test ${is_found_welcome_page} = 1"
 rm_container test_welcome_page
 
 # Check asset precompilation works
