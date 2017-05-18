@@ -3,7 +3,7 @@
 THISDIR=$(dirname ${BASH_SOURCE[0]})
 . ${THISDIR}/utils.sh
 
-IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-42-rhel7-candidate}"
+IMAGE_NAME="${IMAGE_NAME:-rhscl/ror-50-rhel7-candidate}"
 
 function create_container() {
     local name=$1 ; shift
@@ -53,11 +53,11 @@ run_doc_test() {
   local f
   echo "  Testing documentation in the container image"
   # Extract the help files from the container
-  for f in help.1 ; do
+  for f in /usr/share/container-scripts/ror/README.md help.1 ; do
     docker run --rm ${IMAGE_NAME} /bin/bash -c "cat /${f}" >${tmpdir}/$(basename ${f})
     # Check whether the files include some important information
     for term in nodejs layered ; do
-      if ! cat ${tmpdir}/$(basename ${f}) | grep -F -q -e "${term}" ; then
+      if ! cat ${tmpdir}/$(basename ${f}) | grep -q -e "${term}" ; then
         echo "ERROR: File /${f} does not include '${term}'."
         return 1
       fi
@@ -82,14 +82,14 @@ docker inspect "$IMAGE_NAME" &>/dev/null || run "docker pull $IMAGE_NAME"
 
 # Ruby, Rails and Node.js have to be present and directly available:
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'ruby -v' > output"
-run "fgrep 'ruby 2.3' output"
+run "fgrep 'ruby 2.4' output"
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'rails -v' > output"
-run "fgrep 'Rails 4.2' output"
+run "fgrep 'Rails 5.0' output"
 run "docker run --rm $IMAGE_NAME /bin/bash -c 'node -v' > output"
-run "fgrep 'v4.' output"
+run "fgrep 'v6.' output"
 
 # Check Rails welcome page
-CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rails s -b 0.0.0.0 -p 8080'"
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rails s -b 0.0.0.0 -p 8080'"
 run "create_container test_welcome_page"
 CONTAINER_ARGS=
 is_found_welcome_page=0
@@ -98,7 +98,7 @@ for i in `seq 20`; do
   welcome_url="$(get_container_ip 'test_welcome_page'):8080"
   echo "Connecting ${welcome_url} [${i}]"
   curl "${welcome_url}" > output
-  fgrep -q 'Ruby on Rails: Welcome aboard' output
+  fgrep -q '<h1>Yay! You&rsquo;re on Rails!</h1>' output
   if [ "$?" = 0 ]; then
     is_found_welcome_page=1
     break
@@ -108,7 +108,7 @@ run "test ${is_found_welcome_page} = 1"
 rm_container test_welcome_page
 
 # Check asset precompilation works
-CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && sed -i -e \"s/\(gem.*web-console\)/#\1/\" Gemfile && bundle --local && rake assets:precompile'"
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rake assets:precompile'"
 run "docker run --rm $IMAGE_NAME $CONTAINER_ARGS"
 
 run_doc_test

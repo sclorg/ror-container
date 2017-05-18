@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+cat <<EOF
+
+This is a Ruby on Rails 5.0 image with Ruby 2.4 and Node.js 6 preinstalled.
+
+The default directory for installing your application sources is '/opt/app-root/src'
+and the WORKDIR and HOME for the 'default' user is set to this directory as well. 
+EOF
