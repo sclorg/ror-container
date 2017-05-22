@@ -22,8 +22,7 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Let's install the same as STI images
-RUN yum install -y --setopt=tsflags=nodocs \
-  autoconf \
+RUN INSTALL_PKGS="autoconf \
   automake \
   findutils \
   gcc-c++ \
@@ -48,7 +47,9 @@ RUN yum install -y --setopt=tsflags=nodocs \
   wget \
   which \
   yum-utils \
-  zlib-devel && \
+  zlib-devel" && \
+  yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+  rpm -V $INSTALL_PKGS && \
   yum clean all -y && \
   mkdir -p ${HOME} && \
   groupadd -r default -f -g 1001 && \

@@ -16,7 +16,7 @@ docker pull centos/ror-42-centos7
 To create a layered container image that uses this image as base, create a Dockerfile as the following:
 ```
 FROM centos/ror-42-centos7
-ADD your-app /opt/app-root/src
+COPY your-app /opt/app-root/src
 CMD ...
 ```
 
