@@ -16,7 +16,7 @@ docker pull registry.access.redhat.com/rhscl/ror-41-rhel7
 To create a layered container image that uses this image as base, create a Dockerfile as the following:
 ```
 FROM registry.access.redhat.com/rhscl/ror-41-rhel7
-ADD your-app /opt/app-root/src
+COPY your-app /opt/app-root/src
 CMD ...
 ```
 

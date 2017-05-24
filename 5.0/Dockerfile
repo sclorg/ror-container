@@ -9,7 +9,11 @@ It contains Ruby 2.4, Ruby on Rails 5.0, and NodeJS 6 preinstalled."
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$SUMMARY" \
-      io.k8s.display-name="Ruby on Rails 5.0"
+      io.k8s.display-name="Ruby on Rails 5.0" \
+      com.redhat.component="rh-ror50-docker" \
+      name="centos/ror-50-centos7" \
+      version="5.0" \
+      release="1"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
 # https://github.com/openshift/sti-base/blob/master/Dockerfile
@@ -22,8 +26,7 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Let's install the same as STI images
-RUN yum install -y --setopt=tsflags=nodocs \
-  autoconf \
+RUN INSTALL_PKGS="autoconf \
   automake \
   findutils \
   gcc-c++ \
@@ -48,7 +51,9 @@ RUN yum install -y --setopt=tsflags=nodocs \
   wget \
   which \
   yum-utils \
-  zlib-devel && \
+  zlib-devel" && \
+  yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+  rpm -V $INSTALL_PKGS && \
   yum clean all -y && \
   mkdir -p ${HOME} && \
   groupadd -r default -f -g 1001 && \
