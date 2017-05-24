@@ -9,7 +9,11 @@ It contains Ruby 2.2, Ruby on Rails 4.1, and NodeJS 0.10 preinstalled."
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$SUMMARY" \
-      io.k8s.display-name="Ruby on Rails 4.1"
+      io.k8s.display-name="Ruby on Rails 4.1" \
+      com.redhat.component="rh-ror41-docker" \
+      name="centos/ror-41-centos7" \
+      version="4.1" \
+      release="1"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
 # https://github.com/openshift/sti-base/blob/master/Dockerfile

@@ -9,14 +9,11 @@ It contains Ruby 2.2, Ruby on Rails 4.1, and NodeJS 0.10 preinstalled."
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$SUMMARY" \
-      io.k8s.display-name="Ruby on Rails 4.1"
-
-# Labels consumed by Red Hat build service
-LABEL com.redhat.component="rh-ror41-docker" \
+      io.k8s.display-name="Ruby on Rails 4.1" \
+      com.redhat.component="rh-ror41-docker" \
       name="rhscl/ror-41-rhel7" \
       version="4.1" \
-      release="13.3" \
-      architecture="x86_64"
+      release="13.3"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
 # https://github.com/openshift/sti-base/blob/master/Dockerfile
