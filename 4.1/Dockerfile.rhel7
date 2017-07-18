@@ -8,7 +8,7 @@ It contains Ruby 2.2, Ruby on Rails 4.1, and NodeJS 0.10 preinstalled."
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
-      io.k8s.description="$SUMMARY" \
+      io.k8s.description="$DESCRIPTION" \
       io.k8s.display-name="Ruby on Rails 4.1" \
       com.redhat.component="rh-ror41-docker" \
       name="rhscl/ror-41-rhel7" \
