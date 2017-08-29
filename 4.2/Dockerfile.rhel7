@@ -30,6 +30,9 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
 # This is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1479388
 RUN yum repolist > /dev/null && \
     yum install -y yum-utils gettext && \
+    yum-config-manager --disable \* &> /dev/null && \
+    yum-config-manager --enable rhel-7-server-rpms && \
+    yum-config-manager --enable rhel-7-server-optional-rpms && \
     INSTALL_PKGS="autoconf \
     automake \
     findutils \
@@ -77,7 +80,6 @@ ENV RAILS_VERSION 4.2
 # https://access.redhat.com/solutions/1443553
 RUN yum repolist > /dev/null && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum-config-manager --enable rhel-7-server-optional-rpms && \
     INSTALL_PKGS="rh-ror42 rh-ruby23-ruby-devel rh-nodejs4" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
