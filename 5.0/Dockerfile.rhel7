@@ -13,7 +13,8 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="rh-ror50-docker" \
       name="rhscl/ror-50-rhel7" \
       version="5.0" \
-      release="2.1"
+      usage="Build own container image and use FROM rhscl/ror-50-rhel7." \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
 # https://github.com/openshift/sti-base/blob/master/Dockerfile

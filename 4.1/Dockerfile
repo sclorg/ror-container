@@ -13,7 +13,8 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="rh-ror41-docker" \
       name="centos/ror-41-centos7" \
       version="4.1" \
-      release="1"
+      usage="Build own container image and use FROM centos/ror-41-centos7." \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
 # https://github.com/openshift/sti-base/blob/master/Dockerfile
