@@ -1,4 +1,4 @@
-Ruby on Rails 5.0 platform Docker image
+Ruby on Rails 5.0 platform container image
 =======================================
 
 This container image includes Ruby on Rails 5.0 platform for general usage.

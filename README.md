@@ -1,4 +1,4 @@
-Ruby on Rails Docker images
+Ruby on Rails container images
 ===========================
 
 This repository contains Dockerfiles for Ruby on Rails images.

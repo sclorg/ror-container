@@ -1,4 +1,4 @@
-Ruby on Rails 4.1 platform Docker image
+Ruby on Rails 4.1 platform container image
 ================================
 
 This container image includes Ruby on Rails 4.1 platform for general usage.
