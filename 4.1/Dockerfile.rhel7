@@ -17,7 +17,7 @@ LABEL summary="$SUMMARY" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 # The following is taken from STI base image so this Dockerfile follows the same convetions.
-# https://github.com/openshift/sti-base/blob/master/Dockerfile
+# https://github.com/sclorg/s2i-base-container/blob/master/core/Dockerfile
 
 ENV HOME=/opt/app-root/src \
     PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
