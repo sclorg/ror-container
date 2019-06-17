@@ -16,7 +16,6 @@ For more information about concepts used in these container images, see the
 Versions
 ---------------
 Ruby on Rails versions currently provided are:
-* [Ruby on Rails 4.2](4.2)
 * [Ruby on Rails 5.0](5.0)
 
 RHEL versions currently supported are:
@@ -76,9 +75,6 @@ This variable must be set to a list with possible versions (subdirectories).**
 
 Usage
 ---------------------------------
-
-For information about usage of Dockerfile for Ruby on Rails 4.2,
-see [usage documentation](4.2).
 
 For information about usage of Dockerfile for Ruby on Rails 5.0,
 see [usage documentation](5.0).
