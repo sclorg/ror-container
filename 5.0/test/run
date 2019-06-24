@@ -89,7 +89,7 @@ run "docker run --rm $IMAGE_NAME /bin/bash -c 'node -v' > output"
 run "fgrep 'v6.' output"
 
 # Check Rails welcome page
-CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rails s -b 0.0.0.0 -p 8080'"
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && { bundle ; rails s -b 0.0.0.0 -p 8080 ; }'"
 run "create_container test_welcome_page"
 CONTAINER_ARGS=
 is_found_welcome_page=0
@@ -108,7 +108,7 @@ run "test ${is_found_welcome_page} = 1"
 rm_container test_welcome_page
 
 # Check asset precompilation works
-CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && bundle && rake assets:precompile'"
+CONTAINER_ARGS="bash -c 'rails new myapp --skip-bundle && cd myapp && { bundle ; rake assets:precompile ; }'"
 run "docker run --rm $IMAGE_NAME $CONTAINER_ARGS"
 
 run_doc_test
