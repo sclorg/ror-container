@@ -55,7 +55,7 @@ RUN INSTALL_PKGS="autoconf \
   zlib-devel" && \
   yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
-  yum clean all -y && \
+  yum -y clean all --enablerepo='*' && \
   mkdir -p ${HOME} && \
   groupadd -r default -f -g 1001 && \
   useradd -u 1001 -r -g default -d ${HOME} -s /sbin/nologin \
@@ -76,7 +76,7 @@ RUN yum install -y yum-utils && \
     INSTALL_PKGS="rh-ror42 rh-ruby23-ruby-devel rh-nodejs4" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all -y
+    yum -y clean all --enablerepo='*'
 
 # Install the files that we need in the container
 COPY root /
