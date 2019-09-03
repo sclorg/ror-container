@@ -13,6 +13,7 @@ LABEL summary="$SUMMARY" \
       com.redhat.component="rh-ror50-container" \
       name="rhscl/ror-50-rhel7" \
       version="5.0" \
+      com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#rhel" \
       usage="Build own container image and use FROM rhscl/ror-50-rhel7." \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
