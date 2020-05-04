@@ -12,7 +12,8 @@ For more information about contributing, see
 For more information about concepts used in these container images, see the
 [Landing page](https://github.com/sclorg/welcome).
 
-
+There are no supported Ruby on Rails versions and variants.
+<!--
 Versions
 ---------------
 Ruby on Rails versions currently provided are:
@@ -112,3 +113,4 @@ in the commands above.
 **Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
 on all provided versions of Nginx, which must be specified in  `VERSIONS` variable.
 This variable must be set to a list with possible versions (subdirectories).**
+-->
